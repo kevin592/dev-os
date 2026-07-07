@@ -1,0 +1,17 @@
+{
+  "name": "full-stack-development-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "full-stack-development-mcp": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node ./src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.76"
+  }
+}
