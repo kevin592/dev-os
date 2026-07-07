@@ -1,0 +1,47 @@
+{
+  "schema": "full-stack-development.requirement-workspace.v1",
+  "featureName": "电商管理后台",
+  "featureSlug": "ecommerce-admin",
+  "fixedRoot": "docs/full-stack-development/requirements/ecommerce-admin",
+  "currentStage": "product-requirements",
+  "nextAllowedStage": "requirements-review",
+  "userRequest": "我要一个电商管理后台，可以看订单、商品、库存、用户和运营数据。",
+  "latestChangeId": "0001",
+  "agentOwnsClarification": true,
+  "approvals": {
+    "requirementsApproved": false,
+    "visualDesignApproved": false,
+    "implementationApproved": false,
+    "finalAcceptanceApproved": false
+  },
+  "blockedGates": [
+    {
+      "gate": "review_requirement_workspace_stage",
+      "targetStage": "visual-design",
+      "reason": "需求变更后回退到 product-requirements，仍需用户确认更新后的需求工作区。"
+    },
+    {
+      "gate": "review_visual_design_orchestration",
+      "targetStage": "implementation",
+      "reason": "尚无 Pencil/Figma 导出图、视觉证据和用户视觉确认。"
+    }
+  ],
+  "changePolicy": {
+    "recordEveryChange": true,
+    "recordPath": "changes/",
+    "regressToEarliestImpactedStage": true,
+    "invalidateDownstreamApprovals": true
+  },
+  "stageHistory": [
+    {
+      "stage": "rough-intake",
+      "at": "2026-07-07",
+      "reason": "一行粗需求进入 full-stack-development 固定流程。"
+    },
+    {
+      "stage": "product-requirements",
+      "at": "2026-07-07",
+      "reason": "模拟需求变更：库存页面增加批次有效期预警和权限控制。"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "full-stack-development.artifact-registry.v0.2.0",
+  "featureSlug": "ecommerce-admin",
+  "status": "pass",
+  "artifacts": [
+    {
+      "id": "01-rough-request",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/01-rough-request.md",
+      "producer": "requirement-discovery",
+      "consumers": ["stage-gate-reviewer", "visual-design-orchestrator"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "包含原始诉求、范围边界、假设和不超过 3 个聚焦确认问题。",
+      "failureRoute": "requirement-discovery"
+    },
+    {
+      "id": "02-business-requirements",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/02-business-requirements.md",
+      "producer": "requirement-discovery",
+      "consumers": ["stage-gate-reviewer"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "业务目标、指标、规则、风险和优先级可审阅。",
+      "failureRoute": "requirement-discovery"
+    },
+    {
+      "id": "03-product-requirements",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/03-product-requirements.md",
+      "producer": "requirement-discovery",
+      "consumers": ["change-control", "stage-gate-reviewer"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "角色、任务、范围、非目标和库存批次预警变更均被确认。",
+      "failureRoute": "change-control"
+    },
+    {
+      "id": "04-information-architecture",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/04-information-architecture.md",
+      "producer": "requirement-discovery",
+      "consumers": ["visual-design-orchestrator", "implementation-planner"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "页面、对象、字段、导航和批次有效期信息层级完整。",
+      "failureRoute": "requirement-discovery"
+    },
+    {
+      "id": "05-interaction-matrix",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/05-interaction-matrix.md",
+      "producer": "requirement-discovery",
+      "consumers": ["visual-design-orchestrator", "implementation-planner"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "触发、反馈、权限、键盘和异常交互完整。",
+      "failureRoute": "requirement-discovery"
+    },
+    {
+      "id": "06-state-requirements",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/06-state-requirements.md",
+      "producer": "requirement-discovery",
+      "consumers": ["visual-design-orchestrator", "implementation-planner"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "加载、空、错误、成功、禁用、权限、移动态完整。",
+      "failureRoute": "requirement-discovery"
+    },
+    {
+      "id": "07-visual-requirements",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/07-visual-requirements.md",
+      "producer": "hero-ui-craft",
+      "consumers": ["visual-design-orchestrator"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "密度、组件、tokens、响应式和禁止项明确。",
+      "failureRoute": "hero-ui-craft"
+    },
+    {
+      "id": "08-engineering-contract",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/08-engineering-contract.md",
+      "producer": "hero-ui-craft",
+      "consumers": ["implementation-planner", "quality-auditor"],
+      "requiredForStages": ["implementation", "verification"],
+      "status": "draft",
+      "passCondition": "HeroUI、数据、API、权限、测试和部署边界明确。",
+      "failureRoute": "implementation-planner"
+    },
+    {
+      "id": "09-acceptance-contract",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/09-acceptance-contract.md",
+      "producer": "stage-gate-reviewer",
+      "consumers": ["completion-verifier", "quality-auditor"],
+      "requiredForStages": ["implementation", "verification", "completion"],
+      "status": "draft",
+      "passCondition": "功能、视觉、HeroUI、后端、安全和验收命令明确。",
+      "failureRoute": "stage-gate-reviewer"
+    },
+    {
+      "id": "10-visual-confirmation-plan",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/10-visual-confirmation-plan.md",
+      "producer": "visual-design-orchestrator",
+      "consumers": ["visual-evidence-gate", "implementation-planner"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "desktop、mobile、component-detail、state-matrix 和用户批准记录齐全。",
+      "failureRoute": "visual-design-orchestrator"
+    },
+    {
+      "id": "04-visual-tailwind-reference-index",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/04-visual/tailwind-reference-index.md",
+      "producer": "tailwind-reference-adapter",
+      "consumers": ["visual-design-orchestrator", "hero-ui-craft"],
+      "requiredForStages": ["visual-design"],
+      "status": "draft",
+      "passCondition": "TailwindUI v4.1 被标记为 reference-only，且实现必须回到 HeroUI。",
+      "failureRoute": "tailwind-reference-adapter"
+    },
+    {
+      "id": "04-visual-orchestration-plan",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/04-visual/visual-design-orchestration-plan.md",
+      "producer": "visual-design-orchestrator",
+      "consumers": ["visual-evidence-gate"],
+      "requiredForStages": ["visual-design", "implementation"],
+      "status": "draft",
+      "passCondition": "设计工具、四类画板、导出、审批和最终门禁要求明确。",
+      "failureRoute": "visual-design-orchestrator"
+    },
+    {
+      "id": "06-verification-quality-audit-simulations",
+      "path": "docs/full-stack-development/requirements/ecommerce-admin/06-verification/quality-audit-simulations.md",
+      "producer": "quality-auditor",
+      "consumers": ["completion-verifier"],
+      "requiredForStages": ["verification", "completion"],
+      "status": "draft",
+      "passCondition": "五个质量门禁均有 blocked 和 pass 边界说明。",
+      "failureRoute": "quality-auditor"
+    }
+  ],
+  "issues": []
+}
