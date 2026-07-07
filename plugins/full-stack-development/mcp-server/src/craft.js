@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -516,6 +516,59 @@ function workspacePath(root, file) {
   return `${root}/${file}`;
 }
 
+function pathIsAbsolute(filePath = "") {
+  const normalized = normalizePath(filePath);
+  return /^[a-zA-Z]:\//.test(normalized) || normalized.startsWith("/");
+}
+
+function absoluteWorkspaceRoot(input = {}, root) {
+  if (pathIsAbsolute(root)) {
+    return normalizePath(root);
+  }
+
+  if (!input.projectRoot) {
+    return undefined;
+  }
+
+  return normalizePath(resolve(input.projectRoot, root));
+}
+
+function relativeWorkspaceFile(root, filePath) {
+  const normalizedRoot = normalizePath(root).replace(/\/$/, "");
+  const normalizedPath = normalizePath(filePath);
+
+  if (normalizedPath === normalizedRoot) {
+    return "";
+  }
+
+  if (normalizedPath.startsWith(`${normalizedRoot}/`)) {
+    return normalizedPath.slice(normalizedRoot.length + 1);
+  }
+
+  return normalizedPath;
+}
+
+function writeRequirementWorkspaceFiles({ absoluteRoot, root, files }) {
+  const writtenFiles = [];
+  const normalizedRoot = normalizePath(absoluteRoot).replace(/\/$/, "");
+
+  for (const file of files) {
+    const relativePath = relativeWorkspaceFile(root, file.path);
+    const target = resolve(absoluteRoot, relativePath);
+    const normalizedTarget = normalizePath(target);
+
+    if (normalizedTarget !== normalizedRoot && !normalizedTarget.startsWith(`${normalizedRoot}/`)) {
+      throw new Error(`Refusing to write requirement artifact outside workspace: ${file.path}`);
+    }
+
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, file.content, "utf8");
+    writtenFiles.push(normalizedTarget);
+  }
+
+  return writtenFiles;
+}
+
 function workspaceBasename(path) {
   return normalizePath(path).split("/").pop();
 }
@@ -995,9 +1048,7 @@ export function generateRequirementWorkspace(input = {}) {
     outputRoot: input.outputRoot,
     featureSlug
   });
-  const absoluteRoot = input.projectRoot
-    ? normalizePath(`${normalizePath(input.projectRoot).replace(/\/$/, "")}/${root}`)
-    : undefined;
+  const absoluteRoot = absoluteWorkspaceRoot(input, root);
   const files = [
     {
       path: workspacePath(root, WORKSPACE_STAGE_FILE),
@@ -1015,6 +1066,8 @@ export function generateRequirementWorkspace(input = {}) {
       content: initialChangeRecordTemplate({ featureName, userRequest })
     }
   ];
+  const shouldWriteFiles = Boolean(absoluteRoot && input.writeFiles !== false);
+  const writtenFiles = shouldWriteFiles ? writeRequirementWorkspaceFiles({ absoluteRoot, root, files }) : [];
 
   return {
     schema: "hero-ui-craft.requirement-workspace.v1",
@@ -1022,6 +1075,8 @@ export function generateRequirementWorkspace(input = {}) {
     featureSlug,
     fixedRoot: root,
     absoluteRoot,
+    written: shouldWriteFiles,
+    writtenFiles,
     stageFile: workspacePath(root, WORKSPACE_STAGE_FILE),
     currentStage: "rough-intake",
     nextAllowedStage: "requirements",

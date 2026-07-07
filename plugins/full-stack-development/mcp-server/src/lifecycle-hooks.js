@@ -98,9 +98,62 @@ const SPECIAL_BLOCKER_CODES = Object.freeze({
   review_completion_gate: "missing-completion-hook-evidence"
 });
 
+const STAGE_ALIASES = Object.freeze({
+  requirements: "requirement-discovery",
+  "requirement-discovery-stage": "requirement-discovery",
+  design: "visual-design-ready",
+  "visual-design": "visual-design-ready",
+  "pencil-figma": "visual-design-ready",
+  implementation: "implementation-plan-ready",
+  verification: "verification-in-progress",
+  release: "released"
+});
+
 function hookId(stage, event) {
   return `${event}:${stage}`;
 }
+
+function normalizeStageName(stage) {
+  const value = String(stage ?? "").trim();
+  return STAGE_ALIASES[value] ?? value;
+}
+
+function requestedStages(input = {}) {
+  const requested = input.stages?.length ? input.stages : CORE_LIFECYCLE_STAGES;
+  const stages = [];
+  const unknownStages = [];
+
+  for (const stage of requested) {
+    const normalized = normalizeStageName(stage);
+    if (!STAGE_REQUIREMENTS[normalized]) {
+      unknownStages.push(stage);
+      continue;
+    }
+
+    if (!stages.includes(normalized)) {
+      stages.push(normalized);
+    }
+  }
+
+  return {
+    requested,
+    stages,
+    unknownStages
+  };
+}
+
+function unknownStageBlocker(stage) {
+  return {
+    severity: "blocker",
+    code: "unknown-lifecycle-stage",
+    stage,
+    artifact: "mcp-server/src/lifecycle-hooks.js",
+    reason: `Lifecycle stage ${stage} is not registered and could not be normalized.`,
+    requiredFix: "Use a core lifecycle stage or a supported stage alias.",
+    failureRoute: "lifecycle-hook-registry"
+  };
+}
+
 function normalizeEvidence(evidence = {}) {
   if (Array.isArray(evidence)) {
     return Object.fromEntries(
@@ -158,7 +211,7 @@ function hookRecord(stage, event) {
 }
 
 export function listLifecycleHooks(input = {}) {
-  const stages = input.stages?.length ? input.stages : CORE_LIFECYCLE_STAGES;
+  const { requested, stages, unknownStages } = requestedStages(input);
   const hooks = [];
 
   for (const stage of stages) {
@@ -171,20 +224,27 @@ export function listLifecycleHooks(input = {}) {
   }
 
   return {
-    status: "pass",
+    status: unknownStages.length > 0 ? "blocked" : "pass",
     schemaVersion: "full-stack-development.lifecycle-hooks.v0.1.0",
+    requestedStages: [...requested],
     stages: [...stages],
-    hooks
+    aliases: STAGE_ALIASES,
+    hooks,
+    blockers: unknownStages.map(unknownStageBlocker)
   };
 }
 
 export function reviewLifecycleHookCoverage(input = {}) {
-  const stages = input.stages?.length ? input.stages : CORE_LIFECYCLE_STAGES;
+  const { stages, unknownStages } = requestedStages(input);
   const provided = input.hooks ?? listLifecycleHooks({ stages }).hooks;
   const providedIds = new Set(
     provided.map((hook) => hook.id ?? hookId(hook.stage, hook.event))
   );
   const blockers = [];
+
+  for (const stage of unknownStages) {
+    blockers.push(unknownStageBlocker(stage));
+  }
 
   for (const stage of stages) {
     for (const event of ["before", "after"]) {

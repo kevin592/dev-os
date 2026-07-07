@@ -24,6 +24,17 @@ test("top-level skill identifies the plugin as a general Codex product developme
   assert.match(skill, /Completion Gate/i);
 });
 
+test("top-level skill arbitrates one-line site design requests before brainstorming", () => {
+  const skill = readSkill("full-stack-development");
+
+  assert.match(skill, /MUST use first/i);
+  assert.match(skill, /website, landing page, brand site/i);
+  assert.match(skill, /front-end design draft/i);
+  assert.match(skill, /brainstorming.*fixed workspace/s);
+  assert.match(skill, /visual companion.*generate_requirement_workspace/s);
+  assert.match(skill, /one-line request/i);
+});
+
 test("new lifecycle skills declare artifact ownership and gates", () => {
   const skillNames = [
     "requirement-discovery",
@@ -96,4 +107,15 @@ test("requirement discovery skill drafts structure instead of asking the user fo
   assert.match(skill, /draft interaction/i);
   assert.match(skill, /draft state/i);
   assert.match(skill, /at most three focused questions/i);
+});
+
+test("requirement discovery owns one-line website and design draft entry before visual companion", () => {
+  const skill = readSkill("requirement-discovery");
+
+  assert.match(skill, /MUST use before brainstorming/i);
+  assert.match(skill, /website, landing page, brand site/i);
+  assert.match(skill, /front-end design draft/i);
+  assert.match(skill, /do not develop yet/i);
+  assert.match(skill, /Do not offer a browser visual companion/i);
+  assert.match(skill, /generate_requirement_workspace/i);
 });

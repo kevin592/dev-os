@@ -36,6 +36,34 @@ test("lifecycle hook coverage blocks missing stage hooks", () => {
   assert.ok(review.blockers.some((blocker) => blocker.stage === "implementation-plan-ready"));
 });
 
+test("lifecycle hook tools normalize common stage aliases", () => {
+  const registry = listLifecycleHooks({
+    stages: ["requirements", "visual-design"]
+  });
+
+  assert.equal(registry.status, "pass");
+  assert.deepEqual(registry.stages, ["requirement-discovery", "visual-design-ready"]);
+  assert.ok(registry.hooks.some((hook) => hook.id === "before:requirement-discovery"));
+  assert.ok(registry.hooks.some((hook) => hook.id === "before:visual-design-ready"));
+
+  const coverage = reviewLifecycleHookCoverage({
+    stages: ["requirements", "visual-design"],
+    hooks: registry.hooks
+  });
+
+  assert.equal(coverage.status, "pass");
+});
+
+test("lifecycle hook coverage blocks unknown stage aliases", () => {
+  const review = reviewLifecycleHookCoverage({
+    stages: ["requirements", "not-a-real-stage"],
+    hooks: []
+  });
+
+  assert.equal(review.status, "blocked");
+  assert.ok(review.blockers.some((blocker) => blocker.code === "unknown-lifecycle-stage"));
+});
+
 test("implementation planning before hook blocks missing flow profile and Superpowers handoff", () => {
   const review = runLifecycleHook({
     stage: "implementation-plan-ready",

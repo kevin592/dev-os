@@ -1,6 +1,6 @@
 ---
 name: full-stack-development
-description: Use when Codex works on a product, feature, app, website, admin system, backend, database, API, full-stack implementation, or any request that starts from a rough goal and needs requirements, architecture, design, implementation, verification, or requirement-change handling.
+description: MUST use first when Codex works on a product, feature, app, website, landing page, brand site, admin system, backend, database, API, front-end design draft, Pencil/Figma design, full-stack implementation, or any rough goal needing requirements, architecture, design, implementation, verification, or requirement-change handling. When brainstorming also applies, this skill's requirement-discovery and fixed workspace run before brainstorming, visual companion, Pencil/Figma, or code.
 ---
 
 # Full Stack Development
@@ -8,6 +8,20 @@ description: Use when Codex works on a product, feature, app, website, admin sys
 This is the top-level delivery skill for full-stack product work and the general Codex product development plugin. It owns requirement clarification, Artifact Registry, Stage Gate review, backend/frontend contracts, visual approval, implementation gates, change handling, Completion Gate review, and verification.
 
 HeroUI is not the top-level workflow. HeroUI is the front-end layer. Use `hero-ui-craft` as the required frontend UI sub-skill when a task reaches React Web UI, Pencil/Figma, HeroUI components, or visual verification.
+
+## Entry Arbitration
+
+If the user asks for a product, website, landing page, brand site, admin system, app, front-end design draft, Pencil/Figma design, or says "do not develop yet", this skill is the entry workflow.
+
+When `brainstorming` also applies, do not let it replace this workflow. Treat brainstorming as optional raw material inside requirement discovery only after the fixed workspace has been started. Do not offer a visual companion, browser preview, Pencil/Figma drawing, or implementation before `generate_requirement_workspace` creates `docs/full-stack-development/requirements/<feature-slug>/` and the current stage is recorded in `00-stage.json`.
+
+For a one-line request such as "I want a high-end coffee brand website, make the front-end design draft first, do not develop", the first observable actions must be:
+
+1. Inspect the workspace.
+2. Run lifecycle hook coverage when available.
+3. Call `generate_requirement_workspace`.
+4. Draft requirement-discovery artifacts in the fixed workspace.
+5. Report that Pencil/Figma and implementation are blocked until requirement review and user confirmation pass.
 
 ## Core Rule
 
@@ -86,6 +100,7 @@ When the user changes or upgrades requirements:
 
 ## Hard Stops
 
+- No brainstorming visual companion, browser preview, Pencil/Figma drawing, or code before requirement discovery starts the fixed workspace for product/site/design requests.
 - No Pencil/Figma without a fixed workspace and approved requirements.
 - No implementation without approved Pencil/Figma visuals when UI is involved.
 - No frontend UI implementation that bypasses `hero-ui-craft` and official HeroUI checks.

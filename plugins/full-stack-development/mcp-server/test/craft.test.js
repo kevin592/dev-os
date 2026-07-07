@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { tmpdir } from "node:os";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -274,6 +275,37 @@ test("generateRequirementWorkspace creates an agent-owned fixed project workspac
   assert.match(ia, /Assumptions to verify/i);
   assert.match(ia, /Questions for user confirmation/i);
   assert.match(ia, /User confirmation/i);
+});
+
+test("generateRequirementWorkspace writes the fixed workspace when a project root is provided", () => {
+  const projectRoot = mkdtempSync(join(tmpdir(), "fsd-workspace-"));
+
+  try {
+    const workspace = generateRequirementWorkspace({
+      featureName: "Luxury Coffee Brand Site",
+      featureSlug: "luxury-coffee-brand-site-design",
+      userRequest: "I want a high-end coffee brand website design draft; do not develop yet.",
+      projectRoot
+    });
+
+    assert.equal(workspace.written, true);
+    assert.ok(workspace.writtenFiles.length >= 11);
+
+    const stagePath = join(
+      projectRoot,
+      "docs/full-stack-development/requirements/luxury-coffee-brand-site-design/00-stage.json"
+    );
+    const roughPath = join(
+      projectRoot,
+      "docs/full-stack-development/requirements/luxury-coffee-brand-site-design/01-rough-request.md"
+    );
+
+    assert.equal(existsSync(stagePath), true);
+    assert.equal(existsSync(roughPath), true);
+    assert.match(readFileSync(roughPath, "utf8"), /high-end coffee brand website design draft/i);
+  } finally {
+    rmSync(projectRoot, { recursive: true, force: true });
+  }
 });
 
 test("reviewRequirementWorkspaceStage blocks Pencil and implementation unless fixed workspace files exist", () => {
