@@ -45,27 +45,32 @@ Then use the local MCP tools to generate/review the gate:
 - `review_hero_ui_docs_freshness`
 - `select_development_flow_profile`
 - `plan_superpowers_execution_handoff`
+- `list_lifecycle_hooks`
+- `review_lifecycle_hook_coverage`
+- `run_lifecycle_hook`
 
 The workspace must contain a current `00-stage.json`. It is the source of truth for the current phase and approvals.
 
 ## Required Flow
 
 1. Inspect the project stack, package manager, framework, data layer, API style, deployment target, and existing UI system.
-2. Create the fixed requirement workspace under `docs/full-stack-development/requirements/<feature-slug>/`.
-3. Draft requirements as agent-owned artifacts. Mark assumptions and focused user questions.
-4. Get user confirmation and update `00-stage.json` with `approvals.requirementsApproved: true` or `currentStage: "visual-design-ready"`.
-5. If the feature has React Web UI, use `hero-ui-craft` before Pencil/Figma.
-6. Run `review_requirement_workspace_stage` for `targetStage: "visual-design"` before Pencil/Figma.
-7. If the user provides TailwindUI/Tailwind Plus local material, run `inspect_tailwind_ui_reference` and `plan_tailwind_hero_ui_adoption`; treat it as reference-only.
-8. Run `plan_visual_design_orchestration` and `generate_design_board_inventory` to define required Pencil/Figma boards.
-9. Export desktop, mobile, component-detail, and state-matrix images from Pencil/Figma.
-10. Get user approval for visuals and write the approval record.
-11. Run `review_visual_design_orchestration` and `review_visual_evidence`; a visual-approved flag alone is not enough.
-12. Run `review_requirement_workspace_stage` and `review_stage_gate` for `targetStage: "implementation"` before code.
-13. Before writing the implementation plan, run `select_development_flow_profile` and record exactly one profile: `strict-fullstack`, `strict-ui`, `light-change`, or `debug-fix`.
-14. After the implementation plan is drafted, run `plan_superpowers_execution_handoff` and attach the Superpowers execution chain: TDD, subagent-driven or executing-plans, code review, verification-before-completion, and finishing branch workflow.
-15. Implement backend, data, API, frontend, tests, and verification according to the workspace, selected flow profile, and Superpowers execution handoff.
-16. Run project tests, build, browser screenshots, accessibility checks, HeroUI quality review, visual inspection metrics, component graph audit, backend contract audit, code review gate, and docs freshness review when applicable.
+2. Run `list_lifecycle_hooks` and `review_lifecycle_hook_coverage` before stage work if the workspace does not already record hook coverage.
+3. For every stage transition, call `run_lifecycle_hook` with `event: "before"` before entering the stage and `event: "after"` before leaving the stage. Missing required hook evidence blocks the transition.
+4. Create the fixed requirement workspace under `docs/full-stack-development/requirements/<feature-slug>/`.
+5. Draft requirements as agent-owned artifacts. Mark assumptions and focused user questions.
+6. Get user confirmation and update `00-stage.json` with `approvals.requirementsApproved: true` or `currentStage: "visual-design-ready"`.
+7. If the feature has React Web UI, use `hero-ui-craft` before Pencil/Figma.
+8. Run `review_requirement_workspace_stage` for `targetStage: "visual-design"` before Pencil/Figma.
+9. If the user provides TailwindUI/Tailwind Plus local material, run `inspect_tailwind_ui_reference` and `plan_tailwind_hero_ui_adoption`; treat it as reference-only.
+10. Run `plan_visual_design_orchestration` and `generate_design_board_inventory` to define required Pencil/Figma boards.
+11. Export desktop, mobile, component-detail, and state-matrix images from Pencil/Figma.
+12. Get user approval for visuals and write the approval record.
+13. Run `review_visual_design_orchestration` and `review_visual_evidence`; a visual-approved flag alone is not enough.
+14. Run `review_requirement_workspace_stage` and `review_stage_gate` for `targetStage: "implementation"` before code.
+15. Before writing the implementation plan, run `select_development_flow_profile` and record exactly one profile: `strict-fullstack`, `strict-ui`, `light-change`, or `debug-fix`.
+16. After the implementation plan is drafted, run `plan_superpowers_execution_handoff` and attach the Superpowers execution chain: TDD, subagent-driven or executing-plans, code review, verification-before-completion, and finishing branch workflow.
+17. Implement backend, data, API, frontend, tests, and verification according to the workspace, selected flow profile, lifecycle hooks, and Superpowers execution handoff.
+18. Run project tests, build, browser screenshots, accessibility checks, HeroUI quality review, visual inspection metrics, component graph audit, backend contract audit, code review gate, and docs freshness review when applicable.
 
 ## Requirement Changes
 
@@ -87,6 +92,8 @@ When the user changes or upgrades requirements:
 - No backend/API/database implementation when data contracts, API contracts, auth/permission rules, errors, migration impact, and acceptance tests are missing.
 - No implementation plan without a declared flow profile.
 - No implementation after planning unless the Superpowers execution handoff is attached.
+- No stage transition without the matching `run_lifecycle_hook` evidence.
+- Do not add `hooks` to `.codex-plugin/plugin.json`; current plugin validation rejects that manifest field. Use the internal lifecycle hook registry and MCP hook runner.
 - No “just update code” after requirement changes; record the change and regress the stage first.
 - No stage may pass by self-declaration. Use Stage Gate and artifact evidence.
 - No completion claim without the Completion Gate: fresh tests, build, screenshots when UI applies, code review, and final acceptance evidence.
@@ -96,6 +103,7 @@ When the user changes or upgrades requirements:
 - `requirement-discovery`: drafts the first structured contract from a rough goal.
 - `artifact-contract-manager`: owns Artifact Registry and artifact PASS rules.
 - `stage-gate-reviewer`: decides whether the next stage can proceed.
+- `stage-gate-reviewer`: must consume lifecycle hook evidence alongside stage gate results.
 - `change-control`: records requirement changes and regresses stages.
 - `tailwind-reference-adapter`: indexes local TailwindUI/Tailwind Plus material as reference-only and maps it back to HeroUI.
 - `visual-design-orchestrator`: plans and reviews the one-pass Pencil/Figma execution workflow.

@@ -18,6 +18,7 @@
 | No skip request | 用户说“直接开发”“先画图”“别写文档”时，gate 必须阻断并说明缺什么 |
 | No self-score pass | AI 自评分不能作为 gate 依据，必须有 artifact、测试、截图或用户确认 |
 | Change invalidates downstream | 需求变更后，下游 artifact 必须 stale，相关 approvals 必须失效 |
+| Hooks wrap stages | 每个核心阶段必须有 before/after hook；缺 hook 或缺 hook evidence 不得转换阶段 |
 
 ## Stage Pressure Tests
 
@@ -27,6 +28,8 @@
 | Requirement Discovery | agent 连续问 8 个问题不产出草稿 | `over-clarification` | BLOCKED: `too-many-questions-without-draft` |
 | Requirement Discovery | artifact 只有标题和空段落 | `empty-requirement-discovery` | BLOCKED: `empty-template` |
 | Product Scope | 没有 MVP/P0/P1/P2 | `missing-priority-scope` | BLOCKED: `missing-scope-priority` |
+| Lifecycle Hooks | 某阶段缺 before/after hook | `missing-stage-hook` | BLOCKED: `missing-lifecycle-hook` |
+| Lifecycle Hooks | hook 要求的 gate 没有证据 | `missing-hook-evidence` | BLOCKED: `missing-*-hook-evidence` |
 | Product Spec | 只写“功能完整、高级、易用” | `vague-product-spec` | BLOCKED: `non-actionable-contract` |
 | IA/Interaction/State | 没有信息对象和动作矩阵 | `missing-ia-interaction` | BLOCKED: `missing-downstream-usable-structure` |
 | Backend/API Contract | 没有错误、权限、幂等 | `thin-api-contract` | BLOCKED: `missing-api-operational-rules` |
@@ -49,6 +52,8 @@
 | Flow Profile | UI-only 任务误走全栈重流程 | `ui-only-profile-selection` | PASS: `strict-ui` |
 | Flow Profile | 小文档/配置改动误走完整视觉/后端流程 | `small-non-contract-change` | PASS: `light-change` |
 | Flow Profile | bug 修复没有根因和回归测试纪律 | `debug-fix-profile-selection` | PASS: `debug-fix` with TDD/root-cause emphasis |
+| Lifecycle Hooks | implementation-plan-ready before hook 缺 flow profile 和 handoff | `implementation-plan-hook-missing-evidence` | BLOCKED: `missing-flow-profile`, `missing-superpowers-execution-handoff` |
+| Lifecycle Hooks | verification-in-progress before hook 缺 completion gate | `verification-hook-missing-completion` | BLOCKED: `missing-completion-hook-evidence` |
 | Development | 代码先写，测试后补 | `test-after-code` | BLOCKED: `production-code-without-failing-test` |
 | HeroUI Implementation | 使用 `@/components/ui/button` | `shadcn-import` | BLOCKED: `shadcn-import` |
 | HeroUI Implementation | 用 CVA 手写 Button | `handwritten-button` | BLOCKED: `handwritten-ui-official-available` |
@@ -68,6 +73,7 @@
 | Visual Evidence -> Implementation | 下游只读视觉证据 | 能确认当前 changeId、用户批准、四类画板、组件细节和状态矩阵齐全 |
 | HeroUI Retrieval -> Implementation | 下游只读 retrieval 和 plan | 能用 `@heroui/react` 实现，不手写官方组件 |
 | Implementation Plan -> Superpowers Execution | 下游只读 implementation plan | 能看到 flow profile、TDD、task brief、review package、progress ledger、code review、fresh verification 和 finishing branch |
+| Stage Hook -> Stage Gate | 下游只读 hook evidence | 能确认每个阶段转换前后都运行了对应 gate/tool，并且缺 evidence 会阻断 |
 | Implementation -> Completion | 下游只读代码和证据 | 能判断是否 `verified` |
 
 ## Change Mutation Tests

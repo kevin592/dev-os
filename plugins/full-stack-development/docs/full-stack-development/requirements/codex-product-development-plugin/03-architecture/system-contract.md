@@ -12,6 +12,7 @@
 |---|---|---|
 | Artifact contracts | `mcp-server/src/contracts.js` | 定义 artifact registry、artifact 状态、producer/consumer/pass/failure |
 | Stage gates | `mcp-server/src/stage-gates.js` | 定义阶段状态机、gate 检查、阻断原因 |
+| Lifecycle hooks | `mcp-server/src/lifecycle-hooks.js` | 定义每个核心阶段的 before/after 内部 hook、hook 覆盖审查和 hook evidence runner |
 | Change control | `mcp-server/src/change-control.js` | 计算变更影响、stale artifact、审批失效、阶段回退 |
 | Tailwind reference | `mcp-server/src/tailwind-reference.js` | 索引本地 TailwindUI/Tailwind Plus 资源，强制 reference-only、不复制源码，并映射回 HeroUI |
 | Visual orchestration | `mcp-server/src/visual-orchestration.js` | 输出 Pencil/Figma 一次性编排计划，并审查导出、批准和后续 gate 是否完成 |
@@ -32,6 +33,35 @@
 - 每个 blocker 包含 `artifact`、`reason`、`requiredFix`、`failureRoute`。
 - 不能只输出建议；必须给出是否允许进入下一阶段。
 - 不能依赖聊天记录；只读输入 artifact 和 stage 文件。
+
+## Lifecycle Hook Contract
+
+当前插件不能把 `hooks` 字段写入 `.codex-plugin/plugin.json`，因为 validator 会拒绝该 manifest 字段。因此 hook 层作为插件内部 MCP 契约实现:
+
+- `list_lifecycle_hooks`: 返回所有核心阶段的 `before` / `after` hook。
+- `review_lifecycle_hook_coverage`: 缺任一阶段 hook 时返回 `missing-lifecycle-hook`。
+- `run_lifecycle_hook`: 在进入或离开阶段时验证所需 gate/tool evidence。
+
+核心阶段必须全覆盖:
+
+- `rough-intake`
+- `requirement-discovery`
+- `product-scope`
+- `product-spec`
+- `ia-interaction-state`
+- `backend-api-frontend-contract`
+- `visual-requirements`
+- `visual-design-ready`
+- `visual-design-in-progress`
+- `visual-approved`
+- `implementation-plan-ready`
+- `implementation-in-progress`
+- `implementation-complete`
+- `verification-in-progress`
+- `verified`
+- `released`
+
+Hook 不是替代 gate，而是确保 gate 在正确阶段被调用并留下证据。缺 flow profile 仍返回 `missing-flow-profile`；缺 Superpowers handoff 仍返回 `missing-superpowers-execution-handoff`；缺 completion gate evidence 返回 `missing-completion-hook-evidence`。
 
 ## Visual Evidence Contract
 

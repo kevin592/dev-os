@@ -32,6 +32,11 @@ import {
   selectDevelopmentFlowProfile,
   reviewImplementationPlan
 } from "./implementation-plan.js";
+import {
+  listLifecycleHooks,
+  reviewLifecycleHookCoverage,
+  runLifecycleHook
+} from "./lifecycle-hooks.js";
 import { reviewStageGate } from "./stage-gates.js";
 import { inspectTailwindUiReference, planTailwindHeroUiAdoption } from "./tailwind-reference.js";
 import { generateDesignBoardInventory, reviewVisualEvidence } from "./visual-evidence.js";
@@ -673,6 +678,61 @@ server.registerTool(
   },
   async (args) =>
     jsonResult("Generated a TDD-ready implementation plan scaffold.", generateImplementationPlanScaffold(args))
+);
+
+server.registerTool(
+  "list_lifecycle_hooks",
+  {
+    title: "List Lifecycle Hooks",
+    description:
+      "Use this to list the internal full-stack before/after lifecycle hooks for every product development stage.",
+    inputSchema: {
+      stages: z.array(z.string()).optional()
+    },
+    annotations: READ_ONLY_ANNOTATIONS
+  },
+  async (args) => jsonResult("Listed full-stack lifecycle hooks.", listLifecycleHooks(args))
+);
+
+server.registerTool(
+  "review_lifecycle_hook_coverage",
+  {
+    title: "Review Lifecycle Hook Coverage",
+    description:
+      "Use this to block missing before/after hook coverage for required full-stack lifecycle stages.",
+    inputSchema: {
+      stages: z.array(z.string()).optional(),
+      hooks: z
+        .array(
+          z.object({
+            id: z.string().optional(),
+            stage: z.string().optional(),
+            event: z.enum(["before", "after"]).optional()
+          })
+        )
+        .optional()
+    },
+    annotations: READ_ONLY_ANNOTATIONS
+  },
+  async (args) => jsonResult("Reviewed lifecycle hook coverage.", reviewLifecycleHookCoverage(args))
+);
+
+server.registerTool(
+  "run_lifecycle_hook",
+  {
+    title: "Run Lifecycle Hook",
+    description:
+      "Use this as the internal hook runner before or after a stage transition. It blocks when required gate evidence is missing.",
+    inputSchema: {
+      stage: z.string().optional(),
+      currentStage: z.string().optional(),
+      event: z.enum(["before", "after"]).optional(),
+      evidence: z.record(z.any()).optional(),
+      toolResults: z.any().optional()
+    },
+    annotations: READ_ONLY_ANNOTATIONS
+  },
+  async (args) => jsonResult("Ran the full-stack lifecycle hook.", runLifecycleHook(args))
 );
 
 server.registerTool(

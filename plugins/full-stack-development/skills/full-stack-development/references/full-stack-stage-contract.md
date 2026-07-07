@@ -21,6 +21,7 @@ It must track:
 - `approvals.requirementsApproved`
 - `approvals.visualDesignApproved`
 - `approvals.implementationApproved`
+- lifecycle hook evidence for the current transition
 - blocked gates
 - change policy
 - latest change id
@@ -50,6 +51,7 @@ Required layers:
 
 Before Pencil/Figma:
 
+- `run_lifecycle_hook` passes for the relevant `before` stage hook.
 - Fixed workspace exists under `docs/full-stack-development/requirements/<feature-slug>/`.
 - `00-stage.json` exists and marks requirements approved.
 - IA, interaction, state, backend/data, API, frontend, engineering, and acceptance contracts exist when applicable.
@@ -58,6 +60,7 @@ Before Pencil/Figma:
 
 Before implementation:
 
+- `run_lifecycle_hook` passes for the relevant `before` implementation-stage hook.
 - Visuals are approved when UI exists.
 - Visual evidence passes `review_visual_evidence`, including desktop, mobile, component-detail, state-matrix, approval record, and current change id.
 - Backend/data/API contracts are approved when server work exists.
@@ -67,6 +70,7 @@ Before implementation:
 
 Before completion:
 
+- `run_lifecycle_hook` passes for the relevant verification or completion hook.
 - Tests pass.
 - Build passes.
 - Browser screenshots pass when UI exists.
@@ -97,6 +101,37 @@ Implementation planning must hand off to Superpowers discipline:
 - `superpowers:finishing-a-development-branch` after tests pass and integration choice is needed.
 
 Required execution evidence: task brief, task report, review package, `.superpowers/sdd/progress.md`, final code review report, and final acceptance report.
+
+## Lifecycle Hooks
+
+The plugin uses internal lifecycle hooks because current plugin validation rejects a top-level `hooks` field in `.codex-plugin/plugin.json`.
+
+Use MCP tools instead:
+
+- `list_lifecycle_hooks`: lists registered `before` and `after` hooks for every core stage.
+- `review_lifecycle_hook_coverage`: blocks missing hook coverage.
+- `run_lifecycle_hook`: validates that the required gate/tool evidence exists before entering or leaving a stage.
+
+Every core stage must have both a `before:<stage>` and `after:<stage>` hook:
+
+- `rough-intake`
+- `requirement-discovery`
+- `product-scope`
+- `product-spec`
+- `ia-interaction-state`
+- `backend-api-frontend-contract`
+- `visual-requirements`
+- `visual-design-ready`
+- `visual-design-in-progress`
+- `visual-approved`
+- `implementation-plan-ready`
+- `implementation-in-progress`
+- `implementation-complete`
+- `verification-in-progress`
+- `verified`
+- `released`
+
+Hook evidence is not a substitute for the underlying gate. It is the stage-transition wrapper that proves the required gates were actually run.
 
 ## Requirement Changes
 

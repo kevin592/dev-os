@@ -6,6 +6,7 @@ P0 必须让插件具备可运行的全流程核心:
 
 - Artifact Registry: 每个产物有 producer、consumer、PASS 条件、失败回退。
 - Stage Gate: 需求、产品、IA/交互/状态、后端/API/前端合同、视觉、实现、验证、发布阶段可被阻断和放行。
+- Lifecycle Hooks: 每个核心阶段必须有 `before:<stage>` 和 `after:<stage>` 内部 hook，阶段转换必须通过 hook evidence。
 - Requirement Clarification Pressure Tests: 测试 agent 能从粗需求起草结构，不无限澄清，不跳过关键信息。
 - Change Control: 需求变更可生成 change record、影响分析、artifact stale、审批失效、阶段回退。
 - HeroUI Frontend Gate: UI 项目必须读官方 HeroUI 资料、先出 Pencil/Figma 图、用户确认后才能实现，且禁止手写官方已有组件。
@@ -42,7 +43,8 @@ P0 必须让插件具备可运行的全流程核心:
 6. 用完成前缺证据 fixture 证明不能进入 `verified`。
 7. 用 implementation plan fixture 证明缺 flow profile 或 Superpowers handoff 会阻断。
 8. 用 profile selector fixture 证明严格全栈、严格 UI、轻变更、debug 修复能稳定分流。
-9. 源码测试和安装缓存测试都通过。
+9. 用 lifecycle hook fixture 证明每个核心阶段有 before/after hook，且缺 hook evidence 会阻断。
+10. 源码测试和安装缓存测试都通过。
 
 ## PASS Condition
 

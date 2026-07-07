@@ -121,6 +121,16 @@
       "status": "approved",
       "passCondition": "实现计划必须选择 strict-fullstack、strict-ui、light-change 或 debug-fix，并生成 TDD、subagent/executing-plans、code review、verification-before-completion、finishing branch 的 Superpowers 执行交接。",
       "failureRoute": "implementation-planner"
+    },
+    {
+      "id": "lifecycle-hooks",
+      "path": "mcp-server/src/lifecycle-hooks.js",
+      "producer": "stage-gate-reviewer",
+      "consumers": ["all-skills", "stage-gate-reviewer", "implementation-planner", "completion-verifier"],
+      "requiredForStages": ["all"],
+      "status": "approved",
+      "passCondition": "每个核心阶段必须有 before/after 内部 hook；阶段转换必须通过 run_lifecycle_hook 验证所需 gate/tool evidence，缺 hook 或缺 evidence 必须阻断。",
+      "failureRoute": "lifecycle-hook-registry"
     }
   ],
   "addNewArtifactRule": {

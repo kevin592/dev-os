@@ -43,6 +43,7 @@ test("stdio MCP server exposes HeroUI craft tools", async (t) => {
     "inspect_tailwind_ui_reference",
     "list_artifact_contracts",
     "list_hero_ui_agent_docs",
+    "list_lifecycle_hooks",
     "mark_artifacts_stale",
     "plan_change_impact",
     "plan_frontend_requirement_pipeline",
@@ -61,11 +62,13 @@ test("stdio MCP server exposes HeroUI craft tools", async (t) => {
     "review_hero_ui_docs_freshness",
     "review_hero_ui_quality",
     "review_implementation_plan",
+    "review_lifecycle_hook_coverage",
     "review_requirement_workspace_stage",
     "review_stage_gate",
     "review_visual_design_orchestration",
     "review_visual_evidence",
     "review_visual_inspection_metrics",
+    "run_lifecycle_hook",
     "select_development_flow_profile",
     "select_hero_ui_components"
   ]);
@@ -433,4 +436,41 @@ test("stdio MCP server exposes HeroUI craft tools", async (t) => {
   assert.ok(
     superpowersHandoff.structuredContent.result.requiredSkills.includes("superpowers:verification-before-completion")
   );
+
+  const lifecycleHooks = await client.callTool({
+    name: "list_lifecycle_hooks",
+    arguments: {}
+  });
+  assert.equal(lifecycleHooks.structuredContent.result.status, "pass");
+  assert.ok(
+    lifecycleHooks.structuredContent.result.hooks.some(
+      (hook) => hook.stage === "implementation-plan-ready" && hook.event === "before"
+    )
+  );
+
+  const hookCoverage = await client.callTool({
+    name: "review_lifecycle_hook_coverage",
+    arguments: {
+      stages: ["implementation-plan-ready"],
+      hooks: [
+        { stage: "implementation-plan-ready", event: "before" },
+        { stage: "implementation-plan-ready", event: "after" }
+      ]
+    }
+  });
+  assert.equal(hookCoverage.structuredContent.result.status, "pass");
+
+  const lifecycleHook = await client.callTool({
+    name: "run_lifecycle_hook",
+    arguments: {
+      stage: "implementation-plan-ready",
+      event: "before",
+      evidence: {
+        review_stage_gate: { status: "pass" },
+        select_development_flow_profile: { status: "pass" },
+        plan_superpowers_execution_handoff: { status: "pass" }
+      }
+    }
+  });
+  assert.equal(lifecycleHook.structuredContent.result.status, "pass");
 });
