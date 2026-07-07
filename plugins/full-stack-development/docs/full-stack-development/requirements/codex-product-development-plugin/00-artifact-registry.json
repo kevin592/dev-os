@@ -109,7 +109,17 @@
       "consumers": ["dev-builder", "code-review", "release-builder"],
       "requiredForStages": ["implementation-in-progress"],
       "status": "ready-for-user-review",
-      "passCondition": "任务可按阶段执行，每个阶段有文件、接口、测试、压力测试和验收命令。",
+      "passCondition": "任务可按阶段执行，每个阶段有文件、接口、测试、压力测试、flow profile、Superpowers execution handoff 和验收命令。",
+      "failureRoute": "implementation-planner"
+    },
+    {
+      "id": "execution-discipline-and-flow-profile",
+      "path": "mcp-server/src/implementation-plan.js",
+      "producer": "implementation-planner",
+      "consumers": ["dev-builder", "code-review", "completion-verifier", "release-builder"],
+      "requiredForStages": ["implementation-plan-ready", "implementation-in-progress", "verified"],
+      "status": "approved",
+      "passCondition": "实现计划必须选择 strict-fullstack、strict-ui、light-change 或 debug-fix，并生成 TDD、subagent/executing-plans、code review、verification-before-completion、finishing branch 的 Superpowers 执行交接。",
       "failureRoute": "implementation-planner"
     }
   ],

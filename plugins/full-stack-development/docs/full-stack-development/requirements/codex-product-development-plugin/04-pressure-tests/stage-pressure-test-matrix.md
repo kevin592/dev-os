@@ -44,6 +44,11 @@
 | Visual Evidence | 状态矩阵缺 loading/empty/error/disabled/focus | `thin-state-matrix` | BLOCKED: `missing-state-matrix-coverage` |
 | Visual Evidence | 需求变更后沿用旧设计图 | `stale-visual-change-id` | BLOCKED: `stale-visual-evidence` |
 | Implementation Plan | 没有测试步骤和失败原因 | `plan-without-red-tests` | BLOCKED: `missing-tdd-proof` |
+| Implementation Plan | 没有流程分级 | `plan-without-flow-profile` | BLOCKED: `missing-flow-profile` |
+| Implementation Plan | 没有 Superpowers 执行交接 | `plan-without-superpowers-handoff` | BLOCKED: `missing-superpowers-execution-handoff` |
+| Flow Profile | UI-only 任务误走全栈重流程 | `ui-only-profile-selection` | PASS: `strict-ui` |
+| Flow Profile | 小文档/配置改动误走完整视觉/后端流程 | `small-non-contract-change` | PASS: `light-change` |
+| Flow Profile | bug 修复没有根因和回归测试纪律 | `debug-fix-profile-selection` | PASS: `debug-fix` with TDD/root-cause emphasis |
 | Development | 代码先写，测试后补 | `test-after-code` | BLOCKED: `production-code-without-failing-test` |
 | HeroUI Implementation | 使用 `@/components/ui/button` | `shadcn-import` | BLOCKED: `shadcn-import` |
 | HeroUI Implementation | 用 CVA 手写 Button | `handwritten-button` | BLOCKED: `handwritten-ui-official-available` |
@@ -62,6 +67,7 @@
 | Visual Orchestration -> Visual Evidence | 下游只读 orchestration report | 能确认 Pencil/Figma 执行步骤、导出和批准记录 |
 | Visual Evidence -> Implementation | 下游只读视觉证据 | 能确认当前 changeId、用户批准、四类画板、组件细节和状态矩阵齐全 |
 | HeroUI Retrieval -> Implementation | 下游只读 retrieval 和 plan | 能用 `@heroui/react` 实现，不手写官方组件 |
+| Implementation Plan -> Superpowers Execution | 下游只读 implementation plan | 能看到 flow profile、TDD、task brief、review package、progress ledger、code review、fresh verification 和 finishing branch |
 | Implementation -> Completion | 下游只读代码和证据 | 能判断是否 `verified` |
 
 ## Change Mutation Tests

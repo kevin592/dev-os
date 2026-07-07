@@ -11,10 +11,10 @@
     "implementationApproved": true,
     "finalAcceptanceApproved": true
   },
-  "stageReason": "P0/P1 融合实现已进入验证阶段：Artifact Contract、Stage Gate、Change Control、TailwindUI Reference Adapter、Visual Design Orchestration、Visual Evidence Gate、Quality Audits、Pressure Fixtures、Implementation Plan/TDD/Code Review Gate、Completion Gate、MCP 暴露、Skill Tree、端到端模拟和 plugin validator 均已有测试覆盖。",
+  "stageReason": "P0/P1 融合实现已进入验证阶段：Artifact Contract、Stage Gate、Change Control、TailwindUI Reference Adapter、Visual Design Orchestration、Visual Evidence Gate、Quality Audits、Pressure Fixtures、Implementation Plan/TDD/Code Review Gate、Development Flow Profiles、Superpowers Execution Handoff、Completion Gate、MCP 暴露、Skill Tree、端到端模拟和 plugin validator 均已有测试覆盖。",
   "activePlan": "05-implementation/full-fusion-implementation-plan.md",
   "pressureTestMatrix": "04-pressure-tests/stage-pressure-test-matrix.md",
-  "latestChangeId": "0000-initial-intake",
+  "latestChangeId": "0001-superpowers-flow-profiles",
   "staleArtifacts": [],
   "blockedGates": [],
   "verificationReports": [
@@ -35,6 +35,8 @@
     "heroui-frontend-gate-pressure-tests",
     "completion-gate-tests",
     "implementation-plan-tdd-code-review-tests",
+    "development-flow-profile-tests",
+    "superpowers-execution-handoff-tests",
     "plugin-validation",
     "installed-cache-regression"
   ],

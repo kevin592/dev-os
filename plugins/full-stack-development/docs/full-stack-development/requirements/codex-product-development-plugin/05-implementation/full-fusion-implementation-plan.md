@@ -69,6 +69,7 @@ Create or modify these files:
 | G9 Skill Fusion | Plugin Skill tree reflects product lifecycle | Top-level Skill dispatches; child Skills own artifacts |
 | G10 Completion Gate | No false completion | Missing tests/build/screenshots/review blocks `verified` |
 | G11 Install Regression | Source and installed cache both pass | Plugin validation and cache tests pass |
+| G12 Execution Discipline And Flow Profiles | Implementation planning hands off to the right execution intensity | Plans without flow profile or Superpowers handoff block; profile selector covers strict-fullstack, strict-ui, light-change, debug-fix |
 
 ## Task 1: Artifact Contract Core
 
@@ -492,6 +493,8 @@ Expected new tools:
 - `plan_change_impact`
 - `mark_artifacts_stale`
 - `review_completion_gate`
+- `select_development_flow_profile`
+- `plan_superpowers_execution_handoff`
 
 - [ ] **Step 2: Add smoke calls**
 

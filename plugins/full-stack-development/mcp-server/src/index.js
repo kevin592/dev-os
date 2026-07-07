@@ -28,6 +28,8 @@ import { markArtifactsStale, planChangeImpact } from "./change-control.js";
 import { reviewCompletionGate } from "./completion-gate.js";
 import {
   generateImplementationPlanScaffold,
+  planSuperpowersExecutionHandoff,
+  selectDevelopmentFlowProfile,
   reviewImplementationPlan
 } from "./implementation-plan.js";
 import { reviewStageGate } from "./stage-gates.js";
@@ -671,6 +673,53 @@ server.registerTool(
   },
   async (args) =>
     jsonResult("Generated a TDD-ready implementation plan scaffold.", generateImplementationPlanScaffold(args))
+);
+
+server.registerTool(
+  "select_development_flow_profile",
+  {
+    title: "Select Development Flow Profile",
+    description:
+      "Use this to choose the correct lifecycle intensity: strict-fullstack, strict-ui, light-change, or debug-fix.",
+    inputSchema: {
+      requestedProfile: z.string().optional(),
+      flowProfile: z.string().optional(),
+      profile: z.string().optional(),
+      issueType: z.string().optional(),
+      intent: z.string().optional(),
+      changeSize: z.string().optional(),
+      smallChange: z.boolean().optional(),
+      product: z.boolean().optional(),
+      ia: z.boolean().optional(),
+      interaction: z.boolean().optional(),
+      state: z.boolean().optional(),
+      visual: z.boolean().optional(),
+      ui: z.boolean().optional(),
+      backend: z.boolean().optional(),
+      api: z.boolean().optional(),
+      data: z.boolean().optional(),
+      auth: z.boolean().optional(),
+      acceptance: z.boolean().optional()
+    },
+    annotations: READ_ONLY_ANNOTATIONS
+  },
+  async (args) => jsonResult("Selected the full-stack development flow profile.", selectDevelopmentFlowProfile(args))
+);
+
+server.registerTool(
+  "plan_superpowers_execution_handoff",
+  {
+    title: "Plan Superpowers Execution Handoff",
+    description:
+      "Use this after implementation planning to attach Superpowers TDD, subagent/executing-plans, code review, verification-before-completion, and finishing-branch workflow.",
+    inputSchema: {
+      taskCount: z.number().int().optional(),
+      independentTasks: z.boolean().optional(),
+      allowSubagents: z.boolean().optional()
+    },
+    annotations: READ_ONLY_ANNOTATIONS
+  },
+  async (args) => jsonResult("Planned the Superpowers execution handoff.", planSuperpowersExecutionHandoff(args))
 );
 
 server.registerTool(

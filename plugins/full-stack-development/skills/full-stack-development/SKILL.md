@@ -43,6 +43,8 @@ Then use the local MCP tools to generate/review the gate:
 - `review_backend_contract_audit`
 - `review_code_review_gate`
 - `review_hero_ui_docs_freshness`
+- `select_development_flow_profile`
+- `plan_superpowers_execution_handoff`
 
 The workspace must contain a current `00-stage.json`. It is the source of truth for the current phase and approvals.
 
@@ -60,8 +62,10 @@ The workspace must contain a current `00-stage.json`. It is the source of truth 
 10. Get user approval for visuals and write the approval record.
 11. Run `review_visual_design_orchestration` and `review_visual_evidence`; a visual-approved flag alone is not enough.
 12. Run `review_requirement_workspace_stage` and `review_stage_gate` for `targetStage: "implementation"` before code.
-13. Implement backend, data, API, frontend, tests, and verification according to the workspace.
-14. Run project tests, build, browser screenshots, accessibility checks, HeroUI quality review, visual inspection metrics, component graph audit, backend contract audit, code review gate, and docs freshness review when applicable.
+13. Before writing the implementation plan, run `select_development_flow_profile` and record exactly one profile: `strict-fullstack`, `strict-ui`, `light-change`, or `debug-fix`.
+14. After the implementation plan is drafted, run `plan_superpowers_execution_handoff` and attach the Superpowers execution chain: TDD, subagent-driven or executing-plans, code review, verification-before-completion, and finishing branch workflow.
+15. Implement backend, data, API, frontend, tests, and verification according to the workspace, selected flow profile, and Superpowers execution handoff.
+16. Run project tests, build, browser screenshots, accessibility checks, HeroUI quality review, visual inspection metrics, component graph audit, backend contract audit, code review gate, and docs freshness review when applicable.
 
 ## Requirement Changes
 
@@ -81,6 +85,8 @@ When the user changes or upgrades requirements:
 - No implementation without approved Pencil/Figma visuals when UI is involved.
 - No frontend UI implementation that bypasses `hero-ui-craft` and official HeroUI checks.
 - No backend/API/database implementation when data contracts, API contracts, auth/permission rules, errors, migration impact, and acceptance tests are missing.
+- No implementation plan without a declared flow profile.
+- No implementation after planning unless the Superpowers execution handoff is attached.
 - No “just update code” after requirement changes; record the change and regress the stage first.
 - No stage may pass by self-declaration. Use Stage Gate and artifact evidence.
 - No completion claim without the Completion Gate: fresh tests, build, screenshots when UI applies, code review, and final acceptance evidence.
@@ -94,7 +100,7 @@ When the user changes or upgrades requirements:
 - `tailwind-reference-adapter`: indexes local TailwindUI/Tailwind Plus material as reference-only and maps it back to HeroUI.
 - `visual-design-orchestrator`: plans and reviews the one-pass Pencil/Figma execution workflow.
 - `visual-evidence-gate`: reviews Pencil/Figma desktop, mobile, component-detail, state-matrix, approval, and staleness evidence.
-- `implementation-planner`: creates implementation plans with TDD and evidence gates.
+- `implementation-planner`: creates implementation plans with TDD and evidence gates, selects the flow profile, and attaches the Superpowers execution handoff before implementation begins.
 - `quality-auditor`: audits visual metrics, HeroUI component graph, backend/API contracts, code review evidence, and docs freshness.
 - `completion-verifier`: blocks false completion claims until evidence is complete.
 

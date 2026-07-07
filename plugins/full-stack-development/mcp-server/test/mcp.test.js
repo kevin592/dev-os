@@ -48,6 +48,7 @@ test("stdio MCP server exposes HeroUI craft tools", async (t) => {
     "plan_frontend_requirement_pipeline",
     "plan_hero_ui_system",
     "plan_requirement_change",
+    "plan_superpowers_execution_handoff",
     "plan_tailwind_hero_ui_adoption",
     "plan_visual_confirmation",
     "plan_visual_design_orchestration",
@@ -65,6 +66,7 @@ test("stdio MCP server exposes HeroUI craft tools", async (t) => {
     "review_visual_design_orchestration",
     "review_visual_evidence",
     "review_visual_inspection_metrics",
+    "select_development_flow_profile",
     "select_hero_ui_components"
   ]);
 
@@ -409,4 +411,26 @@ test("stdio MCP server exposes HeroUI craft tools", async (t) => {
     }
   });
   assert.equal(planReview.structuredContent.result.status, "pass");
+
+  const flowProfile = await client.callTool({
+    name: "select_development_flow_profile",
+    arguments: {
+      ui: true,
+      backend: false
+    }
+  });
+  assert.equal(flowProfile.structuredContent.result.profile.id, "strict-ui");
+
+  const superpowersHandoff = await client.callTool({
+    name: "plan_superpowers_execution_handoff",
+    arguments: {
+      taskCount: 2,
+      independentTasks: true,
+      allowSubagents: true
+    }
+  });
+  assert.equal(superpowersHandoff.structuredContent.result.executionSkill, "superpowers:subagent-driven-development");
+  assert.ok(
+    superpowersHandoff.structuredContent.result.requiredSkills.includes("superpowers:verification-before-completion")
+  );
 });
